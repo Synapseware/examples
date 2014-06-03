@@ -1,0 +1,45 @@
+programming device...
+	avrdude -c usbtiny -p m328p -B 1 -U flash:w:.\release\sdio.hex
+
+reading fuses...
+	avrdude -c usbtiny -p m328p -B 8 -U hfuse:r:.\high.txt:h -U lfuse:r:.\low.txt:h -U efuse:r:.\ext.txt:h
+
+writing fuses...
+
+(external crystal)
+	avrdude -c usbtiny -p m328p -B 8 -U lfuse:w:0xff:m -U hfuse:w:0xdf:m -U efuse:w:0xff:m
+
+(internal 8mHz r/c)
+	avrdude -c usbtiny -p m328p -B 8 -U lfuse:w:0xe2:m -U hfuse:w:0xdf:m -U efuse:w:0xff:m
+
+
+
+
+
+Build tool test...
+echo avrdude -c usbtiny -p $(avrdevice) -B 8 -U flash:w:"$(OutputDirectory)\$(MSBuildProjectName).hex" > upload.bat
+
+
+
+avrdude -c usbtiny -p usb162 -U hfuse:r:.\high.txt:h -U lfuse:r:.\low.txt:h -U efuse:r:.\ext.txt:h
+avrdude -c usbtiny -p usb162 -U lfuse:w:0xde:m -U hfuse:w:0xd9:m -U efuse:w:0xf7:m
+avrdude -c usbtiny -p usb162 -U lfuse:w:0xde:m -U hfuse:w:0xd1:m -U efuse:w:0xf4:m
+
+
+avrdude -c usbtiny -p usb162 -U lfuse:w:0xff:m
+avrdude -c usbtiny -p usb162 -U hfuse:w:0xd1:m
+avrdude -c usbtiny -p usb162 -U efuse:w:0xf4:m
+
+
+
+
+i2c/twi execution notes:
+	@ 12mHz, uC can execute one instruction every 83.3nS (1/12mHz = 0.000 000 083 3)
+	@ 400kHz, it takes 1/400kHz or 2.5uS (0.000 002 5) per clock tick
+		which means 2.5uS * 9 clocks = 22.5uS (0.000 022 5) for a data packet
+
+	the uC can execute 22.5uS/83.3nS or 0.0000225/0.0000000833 ~= 270.12 instructions
+	per data packet transfer
+
+for 3-packets, that's 270 * 3 or 810 instructions!
+

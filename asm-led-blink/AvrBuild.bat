@@ -1,0 +1,2 @@
+@ECHO OFF
+"C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\avrasm2.exe" -S "C:\Synapseware\code\electronics\asm-led-blink\labels.tmp" -fI -W+ie -C V2 -o "C:\Synapseware\code\electronics\asm-led-blink\firstasm.hex" -d "C:\Synapseware\code\electronics\asm-led-blink\firstasm.obj" -e "C:\Synapseware\code\electronics\asm-led-blink\firstasm.eep" -m "C:\Synapseware\code\electronics\asm-led-blink\firstasm.map" "C:\Synapseware\code\electronics\asm-led-blink\firstasm.asm"
