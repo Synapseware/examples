@@ -1,0 +1,29 @@
+Micro USB Connector pinout
+
+Orientation for pinout = connector has a dot on the top left when pointing away.
+
+	Back:
+	    1  2
+	/---*--*------\
+	\---*--*--*---/
+	    5  4  3
+
+
+Top 2 pins
+	1	D-
+	2	n.c.
+
+Bottom 3 pins
+	3	GND
+	4	D+
+	5	VCC
+
+
+
+Cable:
+	Red		VCC
+	Black	GND
+	Green	D-
+	White	D+
+
+http://wiki.bemaniso.ws/w/images/e/e9/USB_A_pinout.jpg
