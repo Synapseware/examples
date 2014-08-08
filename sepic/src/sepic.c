@@ -5,7 +5,7 @@
 #include <avr/sleep.h>
 
 
-#define F_MAX	127
+#define F_MAX	64
 
 //----------------------------------------------------------------
 // Fast PWM on OC1A/PB1
