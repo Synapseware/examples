@@ -80,3 +80,34 @@ Analog->Digital Converter:
 				(0<<ADTS0);
 
 	DIDR0	=	(1<<PB1);
+
+
+//---------------------------------------------------------------------------------
+// Timer1 - PWM Output on OC1A
+void initTimer1PWMA(void)
+{
+	// Setup PLLCSR - note: PLL is enabled via fuses because we are driving uC clock from the PLL! (pg 97)
+	PLLCSR	=	(0<<LSM)	|		// disable low-speed mode (assuming two 1.2NiMh batteries)
+				(1<<PCKE);			// enable high speed PLL clock
+
+	// setup timer1, 500kHz, PWM, OCR1A
+	GTCCR	=	(0<<PWM1B)	|		// disable PWM, channel B
+				(0<<TSM)	|		// disable counter/timer sync mode
+				(1<<COM1A1);		// we want to toggle OC1B with our PWM signal
+
+	TCCR1	=	(0<<CTC1)	|
+				(1<<COM1A1)	|
+				(0<<COM1A0)	|
+				(1<<PWM1A)	|		// enable PWM, channel A
+				(0<<CS13)	|		// PCK/1
+				(0<<CS12)	|		// 
+				(0<<CS11)	|		// 
+				(1<<CS10);			// 
+
+	OCR1C	=	127;				// 500KHz (64MHz / 128 = 500KHz)
+	OCR1A	=	63;					// default duty cycle
+	OCR1B	=	0;					// could also setup PWM on channel B with alternate duty cycle (stereo sound output?)
+
+	DDRB	|=	(1<<PWM_OUTPUT);	// set as output
+	PORTB	&=	~(1<<PWM_OUTPUT);	// start PWM low
+}

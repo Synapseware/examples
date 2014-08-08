@@ -448,7 +448,7 @@ end:
 
 # Display size of file.
 HEXSIZE = $(SIZE) $(TARGET).hex
-ELFSIZE = $(SIZE) $(TARGET).elf
+ELFSIZE = $(SIZE) --mcu=$(MCU) --format=avr $(TARGET).elf
 
 sizebefore:
 	@if test -f $(TARGET).elf; then echo; echo $(MSG_SIZE_BEFORE); $(ELFSIZE); \
