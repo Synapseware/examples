@@ -13,6 +13,7 @@
 #define DATAIN  12
 #define SPICLOCK  13
 
+#define BUSY_LED	10
 
 uint8_t buffer[256];
 
@@ -45,11 +46,11 @@ uint8_t device_is_ready(int chip_cs_pin)
 // returns 1 if the device encountered an erase or program error
 uint8_t write_succeeded(int chip_cs_pin)
 {
-	// if bit 5 is set then an error was detected
+	// if bit 5 is clear, no error was detected so return true
 	if ((read_status_register(chip_cs_pin) & (1<<5)) == 0)
 		return 1;
 
-	// no errors detected
+	// return false to indicate an error
 	return 0;
 }
 
@@ -70,6 +71,74 @@ inline void write_disable(int chip_cs_pin)
 	// write 04h to the chip to disable the write mode
 	digitalWrite(chip_cs_pin, 0);
 	SPI.transfer(0x04);
+	digitalWrite(chip_cs_pin, 1);
+}
+
+// -------------------------------------------------------------------------------------------------------------------------
+// returns a 1 if the chip is an at25df321, 0 if not
+int is_valid(int chip_cs_pin)
+{
+	digitalWrite(chip_cs_pin, 0);
+
+	uint8_t
+		mfgid	= 0,
+		devid1	= 0;
+
+	SPI.transfer(0x9f);
+	mfgid	= SPI.transfer(0);
+	devid1	= SPI.transfer(0);
+	SPI.transfer(0);
+	SPI.transfer(0);
+
+	digitalWrite(chip_cs_pin, 1);
+
+	return mfgid == 0x1F && devid1 == 0x47;
+}
+
+// -------------------------------------------------------------------------------------------------------------------------
+// Globally allow sector unprotection
+void global_unprotect(int chip_cs_pin)
+{
+	write_enable(chip_cs_pin);
+
+	digitalWrite(chip_cs_pin, 0);
+	SPI.transfer(0x01);				// allow setting of the SPRL bit and the global protect/unprotect flags
+	SPI.transfer
+	(
+		(0<<7) |					// SPRL bit.  0 = unlocked (default), 1 = locked
+		(0<<5) |					// bits 5:2 must be cleared
+		(0<<4) |
+		(0<<3) |
+		(0<<2)
+	);
+	digitalWrite(chip_cs_pin, 1);
+}
+
+// -------------------------------------------------------------------------------------------------------------------------
+// Sets a sector as unprotected
+void unprotect_sector(int chip_cs_pin, uint8_t sector)
+{
+	write_enable(chip_cs_pin);
+
+	digitalWrite(chip_cs_pin, 0);
+	SPI.transfer(0x39);
+	SPI.transfer(sector & 0x3F);
+	SPI.transfer(0);
+	SPI.transfer(0);
+	digitalWrite(chip_cs_pin, 1);
+}
+
+// -------------------------------------------------------------------------------------------------------------------------
+// Sets a sector as unprotected
+void protect_sector(int chip_cs_pin, uint8_t sector)
+{
+	write_enable(chip_cs_pin);
+
+	digitalWrite(chip_cs_pin, 0);
+	SPI.transfer(0x36);
+	SPI.transfer(sector & 0x3F);
+	SPI.transfer(0);
+	SPI.transfer(0);
 	digitalWrite(chip_cs_pin, 1);
 }
 
@@ -178,6 +247,20 @@ int read_block(int chip_cs_pin, uint32_t address, int count, uint8_t* pbuff)
 	return index;
 }
 
+// -------------------------------------------------------------------------------------------------------------------------
+// helper function to toggle the BUSY LED
+void wait_for_pgm(int chip_cs_pin)
+{
+	while(!device_is_ready(CHIP_1))
+	{
+		digitalWrite(BUSY_LED, 1);
+
+		// put a wait in here to slow down the polling
+		delay(250);
+	}
+
+	digitalWrite(BUSY_LED, 0);
+}
 
 // -------------------------------------------------------------------------------------------------------------------------
 // setup
@@ -197,6 +280,10 @@ void setup()
 	pinMode(DATAIN, INPUT);
 	pinMode(SPICLOCK, OUTPUT);
 
+	// prepare format status LED
+	digitalWrite(BUSY_LED, 0);
+	pinMode(BUSY_LED, OUTPUT);
+
 	// set SPI communication parameters
 	SPI.setClockDivider(SPI_CLOCK_DIV16);
 	SPI.setDataMode(SPI_MODE0);
@@ -204,6 +291,21 @@ void setup()
 
 	// begin
 	SPI.begin();
+
+	// check for valid device on chip1
+	if (is_valid(CHIP_1))
+		Serial.println(F("Chip #1 is an AT25DF321"));
+	else
+	{
+		Serial.println(F("Chip is not recognized as an AT25DF321"));
+		return;
+	}
+
+	// issue global unprotect
+	global_unprotect(CHIP_1);
+
+	// unprotect all the sectors
+	//unprotect_sector(CHIP_1, i);
 
 	// format the chip
 	if (erase_chip(CHIP_1))
@@ -215,7 +317,7 @@ void setup()
 	}
 
 	// wait for erase to complete
-	while(!device_is_ready(CHIP_1));
+	wait_for_pgm(CHIP_1);
 
 	// write some test data to the buffer so we have something to send to the chip!
 	strcpy_P((char*)buffer, PSTR("This is some silly data we're going to write to the chip!"));
@@ -230,7 +332,7 @@ void setup()
 	}
 
 	// wait for erase to complete
-	while(!device_is_ready(CHIP_1));
+	wait_for_pgm(CHIP_1);
 
 	// clear the buffer to prove the read works (and hence the write is good)
 	memset(buffer, 0, sizeof(buffer));
