@@ -1,5 +1,75 @@
 atmega32u4
 ==========
+The ATmega16U4/ATmega32U4 is a low-power CMOS 8-bit microcontroller based on the AVR enhanced RISC architecture. By executing powerful instructions in a single clock cycle, the ATmega16U4/ATmega32U4 achieves throughputs approaching 1 MIPS per MHz allowing the system designer to optimize power consumption versus processing speed.
+
+# Interrupt Vectors in ATmega16U4/ATmega32U4
+Reset and Interrupt Vectors
+Vector No. | Program Address | Source | Interrupt Definition
+-------------------------------------------------------------
+1 | $0000 | RESET | External Pin, Power-on Reset, Brown-out Reset, Watchdog Reset, and JTAG AVR Reset
+2 | $0002 | INT0 | External Interrupt Request 0
+3 | $0004 | INT1 | External Interrupt Request 1
+4 | $0006 | INT2 | External Interrupt Request 2
+5 | $0008 | INT3 | External Interrupt Request 3
+6 | $000A | Reserved | Reserved
+7 | $000C | Reserved | Reserved
+8 | $000E | INT6 | External Interrupt Request 6
+9 | $0010 | Reserved | Reserved
+10 | $0012 | PCINT0 | Pin Change Interrupt Request 0
+11 | $0014 | USB | General USB General Interrupt request
+12 | $0016 | USB | Endpoint USB Endpoint Interrupt request
+13 | $0018 | WDT | Watchdog Time-out Interrupt
+14 | $001A | Reserved | Reserved
+15 | $001C | Reserved | Reserved
+16 | $001E | Reserved | Reserved
+17 | $0020 | TIMER1 | CAPT Timer/Counter1 Capture Event
+18 | $0022 | TIMER1 | COMPA Timer/Counter1 Compare Match A
+19 | $0024 | TIMER1 | COMPB Timer/Counter1 Compare Match B
+20 | $0026 | TIMER1 | COMPC Timer/Counter1 Compare Match C
+21 | $0028 | TIMER1 | OVF Timer/Counter1 Overflow
+22 | $002A | TIMER0 | COMPA Timer/Counter0 Compare Match A
+23 | $002C | TIMER0 | COMPB Timer/Counter0 Compare match B
+24 | $002E | TIMER0 | OVF Timer/Counter0 Overflow
+25 | $0030 | SPI | (STC) SPI Serial Transfer Complete
+26 | $0032 | USART1 | RX USART1 Rx Complete
+27 | $0034 | USART1 | UDRE USART1 Data Register Empty
+28 | $0036 | USART1TX | USART1 Tx Complete
+29 | $0038 | ANALOG | COMP Analog Comparator
+30 | $003A | ADC | ADC Conversion Complete
+31 | $003C | EE | READY EEPROM Ready
+32 | $003E | TIMER3 CAPT | Timer/Counter3 Capture Event
+33 | $0040 | TIMER3 COMPA | Timer/Counter3 Compare Match A
+34 | $0042 | TIMER3 COMPB | Timer/Counter3 Compare Match B
+35 | $0044 | TIMER3 COMPC | Timer/Counter3 Compare Match C
+36 | $0046 | TIMER3 OVF | Timer/Counter3 Overflow
+37 | $0048 | TWI | 2-wire Serial Interface
+38 | $004A | SPM | READY Store Program Memory Ready
+39 | $004C | TIMER4 COMPA | Timer/Counter4 Compare Match A
+40 | $004E | TIMER4 COMPB | Timer/Counter4 Compare Match B
+41 | $0050 | TIMER4 COMPD | Timer/Counter4 Compare Match D
+42 | $0052 | TIMER4 OVF | Timer/Counter4 Overflow
+43 | $0054 | TIMER4 FPF | Timer/Counter4 Fault Protection Interrupt
+
+
+## Power Reduction Register
+The Power Reduction Register, PRR, provides a method to stop the clock to individual peripher-als to reduce power consumption. The current state of the peripheral is frozen and the I/O registers can not be read or written. Resources used by the peripheral when stopping the clock will remain occupied, hence the peripheral should in most cases be disabled before stopping the clock. Waking up a module, which is done by clearing the bit in PRR, puts the module in the same state as before shutdown.
+
+```c
+    // Power Reduction Register 0
+    PRR0    =   (0<<PRTWI)  |   // Bit 7 - PRTWI: TWI
+                (0<<PRTIM2) |   // Bit 6 - Res: Reserved bit
+                (0<<PRTIM0) |   // Bit 5 - PRTIM0: Timer/Counter0
+                (0<<PRTIM1) |   // Bit 3 - PRTIM1: Timer/Counter1
+                (0<<PRSPI)  |   // Bit 2 - PRSPI: SPI
+                (0<<PRADC);     // Bit 0 - PRADC: PADC
+
+    // Power Reduction Register 1
+    PRR1    =   (0<<PRUSB)  |   // Bit 7 - PRUSB: USB
+                (0<<PRTIM4) |   // Bit 4- PRTIM4: Timer/Counter4
+                (0<<PRTIM3) |   // Bit 3 - PRTIM3: Timer/Counter3
+                (0<<PRUSART1);  // Bit 0 - PRUSART1: USART1
+```
+
 
 # Hardware
 
