@@ -560,3 +560,82 @@ When the SPI is configured as a Slave, the Slave Select (SS) pin is always input
 ```
 
 
+## Analog to Digital Converter - ADC
+> The ATmega16U4/ATmega32U4 features a 10-bit successive approximation ADC. The ADC is connected to an 12-channel Analog Multiplexer which allows six single-ended voltage inputs constructed from several pins of Port B, D and F. The single-ended voltage inputs refer to 0V (GND).
+
+```c
+    // ADC Multiplexer Selection Register
+    ADMUX   =   (0<<REFS1)  |   // Bit 7:6 – REFS1:0: Reference Selection Bits
+                (0<<REFS0)  |   // ...
+                (0<<ADLAR)  |   // Bit 5 – ADLAR: ADC Left Adjust Result
+                (0<<MUX4)   |   // Bits 4:0 – MUX4:0: Analog Channel Selection
+                (0<<MUX3)   |   // ...
+                (0<<MUX2)   |   // ...
+                (0<<MUX1)   |   // ...
+                (0<<MUX0);      // ...
+
+    // ADC Control and Status Register A
+    ADCSRA  =   (0<<ADEN)   |   // Bit 7 – ADEN: ADC Enable
+                (0<<ADSC)   |   // Bit 6 – ADSC: ADC Start Conversion
+                (0<<ADATE)  |   // Bit 5 – ADATE: ADC Auto Trigger Enable
+                (0<<ADIF)   |   // Bit 4 – ADIF: ADC Interrupt Flag
+                (0<<ADIE)   |   // Bit 3 – ADIE: ADC Interrupt Enable
+                (0<<ADPS2)  |   // Bits 2:0 – ADPS2:0: ADC Prescaler Select
+                (0<<ADPS1)  |   // ...
+                (0<<ADPS0);     // ...
+
+    // ADC Control and Status Register B
+    ADCSRB  =   (0<<ADHSM)  |   // Bit 7 – ADHSM: ADC High Speed Mode
+                (0<<ACME)   |   // Bit 6 – ACME: Analog Comparator Mux Enable
+                (0<<MUX5)   |   // Bit 5 – MUX5: Analog Channel Selection
+                (0<<ADTS3)  |   // Bit 3:0 – ADTS3:0: ADC Auto Trigger Source
+                (0<<ADTS2)  |   // ...
+                (0<<ADTS1)  |   // ...
+                (0<<ADTS0);     // ...
+    
+    // Digital Input Disable Register 0
+    // Bit 7:4, 1:0 – ADC1:0 Digital Input Disable
+    DIDR0   =   (0<<ADC7D)  |   // Bit 7
+                (0<<ADC6D)  |   // Bit 6
+                (0<<ADC5D)  |   // Bit 5
+                (0<<ADC4D)  |   // Bit 4
+                (0<<ADC1D)  |   // Bit 1
+                (0<<ADC0D);     // Bit 0
+    
+    // Digital Input Disable Register 2
+    // Bit 5:0 – Digital Input Disable
+    DIDR2   =   (0<<ADC13D) |   // Bit 5
+                (0<<ADC12D) |   // Bit 4
+                (0<<ADC11D) |   // Bit 3
+                (0<<ADC10D) |   // Bit 2
+                (0<<ADC9D) |    // Bit 1
+                (0<<ADC8D);     // Bit 0
+    
+
+
+```
+
+*Note: When an ADC conversion is complete, the result is found in these two registers. If differential channels are used, the result is presented in two’s complement form.  When ADCL is read, the ADC Data Register is not updated until ADCH is read. Consequently, if the result is left adjusted and no more than 8-bit precision (7 bit + sign bit for differential input channels) is required, it is sufficient to read ADCH. Otherwise, ADCL must be read first, then ADCH. The ADLAR bit in ADMUX, and the MUXn bits in ADMUX affect the way the result is read from the registers. If ADLAR is set, the result is left adjusted. If ADLAR is cleared (default), the result is right adjusted.*
+
+## Analog Comparator- AC
+> The Analog Comparator compares the input values on the positive pin AIN+ and negative pin AIN-. When the voltage on the positive pin AIN+ is higher than the voltage on the negative pin AIN-, the Analog Comparator output, ACO, is set.
+
+```c
+    // ADC Control and Status Register B
+    // Bit 6 – ACME: Analog Comparator Multiplexer Enable
+    ADCSRB  =   (0<<ACME);
+
+    // Analog Comparator Control and Status Register
+    ACSR    =   (0<<ACD)    |   // Bit 7 – ACD: Disable
+                (0<<ACBG)   |   // Bit 6 – ACBG: Bandgap Select
+                (0<<ACO)    |   // Bit 5 – ACO: Analog Comparator Output
+                (0<<ACI)    |   // Bit 4 – ACI: Interrupt Flag
+                (0<<ACIE)   |   // Bit 3 – ACIE: Interrupt Enable
+                (0<<ACIC)   |   // Bit 2 – ACIC: Input Capture Enable
+                (0<<ACIS1)  |   // Bit 1 - ACIS1: Interrupt Mode Select
+                (0<<ACIS0);     // Bit 0 - ACIS0: Interrupt Mode Select
+
+    // Digital Input Disable Register 1
+    DIDR1   =   (0<<AIN0D);     // Bit 0 – AIN0D: AIN0 Digital Input Disable
+```
+
