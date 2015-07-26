@@ -5,7 +5,7 @@ The ATmega16U4/ATmega32U4 is a low-power CMOS 8-bit microcontroller based on the
 # Interrupt Vectors in ATmega16U4/ATmega32U4
 Reset and Interrupt Vectors
 Vector No. | Program Address | Source | Interrupt Definition
--------------------------------------------------------------
+------------------------------------------------------------
 1 | $0000 | RESET | External Pin, Power-on Reset, Brown-out Reset, Watchdog Reset, and JTAG AVR Reset
 2 | $0002 | INT0 | External Interrupt Request 0
 3 | $0004 | INT1 | External Interrupt Request 1
@@ -50,6 +50,71 @@ Vector No. | Program Address | Source | Interrupt Definition
 42 | $0052 | TIMER4 OVF | Timer/Counter4 Overflow
 43 | $0054 | TIMER4 FPF | Timer/Counter4 Fault Protection Interrupt
 
+## MCU Control Register – MCUCR
+```c
+    // MCU Control Register
+    MCUCR   =   (0<<JTD)    |   // Bits 7 – JTD: JTAG Interface Disable
+                (0<<PUD)    |   // Bit 4 – PUD: Pull-up Disable
+                (0<<IVSEL)  |   // Bit 1 – IVSEL: Interrupt Vector Select
+                (0<<IVCE);      // Bit 0 – IVCE: Interrupt Vector Change Enable
+```
+
+
+## External Interrupts
+> The External Interrupts are triggered by the INT6, INT3:0 pin or any of the PCINT7..0 pins.  Observe that, if enabled, the interrupts will trigger even if the INT[6;3:0] or PCINT7..0 pins are configured as outputs. This feature provides a way of generating a software interrupt.
+> The Pin change interrupt PCI0 will trigger if any enabled PCINT7:0 pin toggles. PCMSK0 Register control which pins contribute to the pin change interrupts. Pin change interrupts on PCINT7..0 are detected asynchronously. This implies that these interrupts can be used for waking the part also from sleep modes other than Idle mode.
+
+```c
+    // External Interrupt Control Register A
+    // Bits 7..0 – ISC31, ISC30 – ISC00, ISC00: External Interrupt 3 - 0 Sense Control Bits
+    EICRA   =   (0<<ISC31)  |   // Bit - 7 Interrupt Sense Control 3
+                (0<<ISC30)  |   // Bit - 6 ...
+                (0<<ISC21)  |   // Bit - 5 Interrupt Sense Control 2
+                (0<<ISC20)  |   // Bit - 4 ...
+                (0<<ISC11)  |   // Bit - 3 Interrupt Sense Control 1
+                (0<<ISC10)  |   // Bit - 2 ...
+                (0<<ISC01)  |   // Bit - 1 Interrupt Sense Control 0
+                (0<<ISC00);     // Bit - 0 ...
+
+    // External Interrupt Control Register B
+    // Bits 5, 4 – ISC61, ISC60: External Interrupt 6 Sense Control Bits
+    EICRB   =   (0<<ISC61)  |
+                (0<<ISC60);
+
+    // External Interrupt Mask Register
+    // Bits 6,3:0 – INT6, INT3 – INT0: External Interrupt Request 6, 3 - 0 Enable
+    EIMSK   =   (0<<INT6)   |   // Bit 6 - INT6: 
+                (0<<INT3)   |   // Bit 3 - INT3
+                (0<<INT2)   |   // Bit 2 - INT2
+                (0<<INT1)   |   // Bit 1 - INT1
+                (0<<IINT0);     // Bit 0 - INT0
+
+    // External Interrupt Flag Register
+    EIFR    =   (0<<INTF6)  |   // Bit 6 - INTF6
+                (0<<INTF3)  |   // Bit 3 - INTF3
+                (0<<INTF2)  |   // Bit 2 - INTF2
+                (0<<INTF1)  |   // Bit 1 - INTF1
+                (0<<IINTF0);    // Bit 6 - INTF0
+    
+    // Pin Change Interrupt Control Register
+    PCICR   =   (0<<PCIE0);     // Bit 0 – PCIE0: Pin Change Interrupt Enable 0
+    
+    // Pin Change Interrupt Flag Register
+    PCIFR   =   (0<<PCIF0);     // Bit 0 – PCIF0: Pin Change Interrupt Flag 0
+
+    // Pin Change Mask Register 0
+    // Bit 7..0 – PCINT7..0: Pin Change Enable Mask 7..0
+    PCMSK0  =   (0<<PCINT7) |
+                (0<<PCINT6) |
+                (0<<PCINT5) |
+                (0<<PCINT4) |
+                (0<<PCINT3) |
+                (0<<PCINT2) |
+                (0<<PCINT1) |
+                (0<<PCINT0);
+    
+```
+
 
 ## Power Reduction Register
 The Power Reduction Register, PRR, provides a method to stop the clock to individual peripher-als to reduce power consumption. The current state of the peripheral is frozen and the I/O registers can not be read or written. Resources used by the peripheral when stopping the clock will remain occupied, hence the peripheral should in most cases be disabled before stopping the clock. Waking up a module, which is done by clearing the bit in PRR, puts the module in the same state as before shutdown.
@@ -71,7 +136,48 @@ The Power Reduction Register, PRR, provides a method to stop the clock to indivi
 ```
 
 
+
 # Hardware
+
+## EEPROM Data Memory
+> The ATmega16U4/ATmega32U4 contains 512Bytes/1K bytes of data EEPROM memory. It is organized as a separate data space, in which single bytes can be read and written. The EEPROM has an endurance of at least 100,000 write/erase cycles.
+
+```c
+    // The EEPROM Address Register
+    // // Bits 11..0 – EEAR8..0: EEPROM Address
+    EEARH   =   0;
+    EEARL   =   0;
+
+    // The EEPROM Data Register
+    EEDR    =   0;
+
+    // The EEPROM Control Register
+    EECR    =   (0<<EEPM1)  |   // Bit 5 – EEPM1: EEPROM Prog. Mode
+                (0<<EEPM0)  |   // Bit 4 – EEPM0: EEPROM Prog. Mode
+                (0<<EERIE)  |   // Bit 3 – EERIE: EEPROM Ready Interrupt Enable
+                (0<<EEMPE)  |   // Bit 2 – EEMPE: EEPROM Master Prog. Enable
+                (0<<EEPE)   |   // Bit 1 – EEPE: EEPROM Prog. Enable
+                (0<<EERE);      // Bit 0 – EERE: EEPROM Read Enable
+```
+
+
+## Watchdog
+
+```c
+    // Watchdog Timer Control Register
+    WDTCSR  =   (0<<WDIF)   |   // Bit 7 - WDIF: Watchdog Interrupt Flag
+                (0<<WDIE)   |   // Bit 6 - WDIE: Watchdog Interrupt Enable
+                (0<<WDP3)   |   // Bit 5 - WDP3: Watchdog Timer Prescaler 3
+                (0<<WDCE)   |   // Bit 4 - WDCE: Watchdog Change Enable
+                (0<<WDE)    |   // Bit 3 - WDE: Watchdog System Reset Enable
+                (0<<WDP2)   |   // Bit 2 - WDP2: Watchdog Timer 2
+                (0<<WDP1)   |   // Bit 1 - WDP1: Watchdog Timer 1
+                (0<<WDP0);      // Bit 0 - WDP0: Watchdog Timer 0
+```
+
+
+## External Interrupts
+> 
 
 ## Timer0 Settings
 > Timer/Counter0 is a general purpose 8-bit Timer/Counter module, with two independent Output Compare Units, and with PWM support. It allows accurate program execution timing (event management) and wave generation.
