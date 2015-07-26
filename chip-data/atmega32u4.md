@@ -183,8 +183,7 @@ The Power Reduction Register, PRR, provides a method to stop the clock to indivi
 > Timer/Counter0 is a general purpose 8-bit Timer/Counter module, with two independent Output Compare Units, and with PWM support. It allows accurate program execution timing (event management) and wave generation.
 
 ```c
-
-    // 
+    // Timer/Counter Control Register A
     TCCR0A  =   (0<<COM0A)  |
                 (0<<COM0A)  |
                 (0<<COM0B)  |
@@ -192,7 +191,7 @@ The Power Reduction Register, PRR, provides a method to stop the clock to indivi
                 (0<<WGM0)   |
                 (0<<WGM0);
 
-    // 
+    // Timer/Counter Control Register B
     TCCR0B  =   (0<<FOC0A)  |
                 (0<<FOC0B)  |
                 (0<<WGM02)  |
@@ -200,7 +199,7 @@ The Power Reduction Register, PRR, provides a method to stop the clock to indivi
                 (0<<CS01)   |
                 (0<<CS00);
 
-    // 
+    // Timer/Counter Register
     TCNT0   =   0;
 
     // Output Compare Register A
@@ -610,9 +609,6 @@ When the SPI is configured as a Slave, the Slave Select (SS) pin is always input
                 (0<<ADC10D) |   // Bit 2
                 (0<<ADC9D) |    // Bit 1
                 (0<<ADC8D);     // Bit 0
-    
-
-
 ```
 
 *Note: When an ADC conversion is complete, the result is found in these two registers. If differential channels are used, the result is presented in two’s complement form.  When ADCL is read, the ADC Data Register is not updated until ADCH is read. Consequently, if the result is left adjusted and no more than 8-bit precision (7 bit + sign bit for differential input channels) is required, it is sufficient to read ADCH. Otherwise, ADCL must be read first, then ADCH. The ADLAR bit in ADMUX, and the MUXn bits in ADMUX affect the way the result is read from the registers. If ADLAR is set, the result is left adjusted. If ADLAR is cleared (default), the result is right adjusted.*
