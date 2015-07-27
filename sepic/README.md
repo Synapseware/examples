@@ -21,3 +21,7 @@ The PWM output is available on PB1.  The output should not be filtered since it 
 
 # Other Chip Information
 The AVR uC is configured to use it's internal R/C oscillator.  High clock accuracy is not needed by this circuit and keeping the part count low is a goal of this example.
+
+
+# Build
+This project compiles and uploads just fine using Linux and avr-gnu.
