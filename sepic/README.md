@@ -1,6 +1,6 @@
-sepic
-=====
-This example project uses an ATTiny85 to drive at 250kHz PWM signal.  The PWM output is usually fed into a MOSFET which is driving either a buck, boost or inverting SMPS circuit.
+SMPS Example
+============
+This example project uses an ATTiny85 to drive at 250kHz PWM signal.  The PWM output is usually fed into a MOSFET which is driving either a buck, boost or inverting SMPS circuit.  Other variants of the ATTiny85 (such as the attiny25 or attiny85v) should substitute out with little effort.
 
 *This circuit attempts to do in firmware what an off-the-shelf driver can accomplish, but with fewer parts and software configurability.*
 
@@ -20,4 +20,4 @@ Timer1 is used in a Fast-PWM configuration with the 64mHz PLL clock.  This allow
 The PWM output is available on PB1.  The output should not be filtered since it must be fed to the SMPS switching element.  Care should be taken to keep this line short and include an appropriately sized pull-down/pull-up resistor to ensure safe operation of the power MOSFET or other switching transistor.
 
 # Other Chip Information
-The AVR mController is configured to use it's internal R/C oscillator.  High clock accuracy is not needed by this circuit and keeping the part count low is a goal of this example.
+The AVR uC is configured to use it's internal R/C oscillator.  High clock accuracy is not needed by this circuit and keeping the part count low is a goal of this example.
