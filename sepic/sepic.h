@@ -8,10 +8,10 @@
 #include <avr/sleep.h>
 
 
-#define F_MAX	127
+#define F_MAX    127
 
-const float		SCALE	= (float)(F_MAX/255.0);
-const uint8_t	MAX		= (uint8_t)(F_MAX * 0.90);
+const float      SCALE      = (float)(F_MAX/255.0);
+const uint8_t    MAX        = (uint8_t)(F_MAX * 0.90);
 
 
 
