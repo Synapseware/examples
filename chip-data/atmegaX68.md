@@ -111,6 +111,50 @@ ADC Settings:
 				(0<<ADC1D)	|	// 
 				(0<<ADC0D);		// 
 
+//----------------------------------------------------------------
+// Gets the MUX configuration bits for the specified channel
+static void ConfigureADCChannel(uint8_t channel)
+{
+	// get the MUX value 
+	uint8_t mux =	(ADMUX & 0xF0) |	// mask out the channel bits
+					(channel & 0x07);	// set the channel
+
+	switch (channel)
+	{
+		case 0:
+			DIDR0 = (1<<ADC0D);
+			DDRC &= ~(1<<PC0);
+			break;
+		case 1:
+			DIDR0 = (1<<ADC1D);
+			DDRC &= ~(1<<PC1);
+			break;
+		case 2:
+			DIDR0 = (1<<ADC2D);
+			DDRC &= ~(1<<PC2);
+			break;
+		case 3:
+			DIDR0 = (1<<ADC3D);
+			DDRC &= ~(1<<PC3);
+			break;
+		case 4:
+			DIDR0 = (1<<ADC4D);
+			DDRC &= ~(1<<PC4);
+			break;
+		case 5:
+			DIDR0 = (1<<ADC5D);
+			DDRC &= ~(1<<PC5);
+			break;
+		case 0x0E:	// 1.1v reference
+		case 0x0F:	// 0v - GND
+			break;
+		default:
+			return;
+	}
+
+	// set the MUX register
+	ADMUX = mux;
+}
 
 //---------------------------------------------------------------------------
 SPI Settings:
