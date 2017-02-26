@@ -188,8 +188,8 @@ The Power Reduction Register, PRR, provides a method to stop the clock to indivi
                 (0<<COM0A)  |
                 (0<<COM0B)  |
                 (0<<COM0B)  |
-                (0<<WGM0)   |
-                (0<<WGM0);
+                (0<<WGM01)   |
+                (0<<WGM00);
 
     // Timer/Counter Control Register B
     TCCR0B  =   (0<<FOC0A)  |
