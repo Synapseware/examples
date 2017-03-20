@@ -77,6 +77,7 @@ Timer2 Settings:
 	OCR2A	=	0xFF;
 	OCR2B	=	0xFF;
 
+
 //---------------------------------------------------------------------------
 ADC Settings:
 
@@ -111,50 +112,25 @@ ADC Settings:
 				(0<<ADC1D)	|	// 
 				(0<<ADC0D);		// 
 
-//----------------------------------------------------------------
-// Gets the MUX configuration bits for the specified channel
-static void ConfigureADCChannel(uint8_t channel)
-{
-	// get the MUX value 
-	uint8_t mux =	(ADMUX & 0xF0) |	// mask out the channel bits
-					(channel & 0x07);	// set the channel
 
-	switch (channel)
-	{
-		case 0:
-			DIDR0 = (1<<ADC0D);
-			DDRC &= ~(1<<PC0);
-			break;
-		case 1:
-			DIDR0 = (1<<ADC1D);
-			DDRC &= ~(1<<PC1);
-			break;
-		case 2:
-			DIDR0 = (1<<ADC2D);
-			DDRC &= ~(1<<PC2);
-			break;
-		case 3:
-			DIDR0 = (1<<ADC3D);
-			DDRC &= ~(1<<PC3);
-			break;
-		case 4:
-			DIDR0 = (1<<ADC4D);
-			DDRC &= ~(1<<PC4);
-			break;
-		case 5:
-			DIDR0 = (1<<ADC5D);
-			DDRC &= ~(1<<PC5);
-			break;
-		case 0x0E:	// 1.1v reference
-		case 0x0F:	// 0v - GND
-			break;
-		default:
-			return;
-	}
+//---------------------------------------------------------------------------
+Analog Comparator
 
-	// set the MUX register
-	ADMUX = mux;
-}
+	// Bit 6 – ACME: Analog Comparator Multiplexer Enable
+	ADCSRB	=	(0<<ACME);
+
+	ACSR	=	(0<<ACD)	|	// Bit 7 – ACD: Comparator Disable
+				(0<<ACBG)	|	// Bit 6 – ACBG: Bandgap Select
+				(0<<ACO)	|	// Bit 5 – ACO: Comparator Output
+				(0<<ACI)	|	// Bit 4 – ACI: Interrupt Flag
+				(0<<ACIE)	|	// Bit 3 – ACIE: Interrupt Enable
+				(0<<ACIC)	|	// Bit 2 – ACIC: Input Capture Enable
+				(0<<ACIS1)	|	// Bit 1 – ACIS1: Interrupt Mode Select
+				(0<<ACIS0);		// Bit 0 – ACIS0: Interrupt Mode Select
+
+	DIDR1	=	(0<<AIN1D)	|	// Bit 1 – AIN1D: AIN1 Digital Input Disable
+				(0<<AIN0D);		// Bit 0 – AIN0D: AIN0 Digital Input Disable
+
 
 //---------------------------------------------------------------------------
 SPI Settings:
@@ -174,21 +150,66 @@ SPI Settings:
 
 	SPDR – SPI Data Register
 
-//---------------------------------------------------------------------------
-Analog Comparator
 
-	// Bit 6 – ACME: Analog Comparator Multiplexer Enable
-	ADCSRB	=	(0<<ACME);
+//----------------------------------------------------------------
+UART Settings:
 
-	ACSR	=	(0<<ACD)	|	// Bit 7 – ACD: Comparator Disable
-				(0<<ACBG)	|	// Bit 6 – ACBG: Bandgap Select
-				(0<<ACO)	|	// Bit 5 – ACO: Comparator Output
-				(0<<ACI)	|	// Bit 4 – ACI: Interrupt Flag
-				(0<<ACIE)	|	// Bit 3 – ACIE: Interrupt Enable
-				(0<<ACIC)	|	// Bit 2 – ACIC: Input Capture Enable
-				(0<<ACIS1)	|	// Bit 1 – ACIS1: Interrupt Mode Select
-				(0<<ACIS0);		// Bit 0 – ACIS0: Interrupt Mode Select
+	UCSR0A	=	(0<<U2X0)	|	// No double speed
+				(0<<MPCM0);		// No multi-proc mode
 
-	DIDR1	=	(0<<AIN1D)	|	// Bit 1 – AIN1D: AIN1 Digital Input Disable
-				(0<<AIN0D);		// Bit 0 – AIN0D: AIN0 Digital Input Disable
+	UCSR0B	=	(0<<RXCIE0)	|	// RX Complete Interrupt Enable
+				(0<<TXCIE0)	|	// TX Complete Interrupt Enable
+				(0<<UDRIE0)	|	// USART Data Register Empty Interrupt Enable
+				(0<<RXEN0)	|	// Receiver Enable
+				(0<<TXEN0)	|	// Transmitter Enable
+				(0<<UCSZ02)	|	// Character Size
+				(0<<RXB80)	|	// Receive Data Bit 8
+				(0<<TXB80);		// Transmit Data Bit 8
+
+	UCSR0C	=	(0<<UMSEL01)|	// USART Mode Select
+				(0<<UMSEL00)|	// ...
+				(0<<UPM01)	|	// Parity Mode
+				(0<<UPM00)	|	// ...
+				(0<<USBS0)	|	// Stop Bit Select
+				(0<<UCSZ01)	|	// Character Size
+				(0<<UCSZ00)	|	// ..
+				(0<<UCPOL0);	// Clock Polarity
+
+//----------------------------------------------------------------
+// Gets the MUX configuration bits for the specified channel
+static void ConfigureADCChannel(uint8_t channel)
+{
+	channel		&=	0x0F;
+	uint8_t mux =	(ADMUX & 0xF0) |	// mask out the channel bits
+					(channel);			// set the channel
+
+	if (channel < 8)
+	{
+		// disable digital input on the selected channel
+		DIDR0 = (1<<channel);
+
+		// set the pin as input
+		DDRC &= ~(1<<channel);
+	}
+	else if (0x08 == channel) // 8
+	{
+		// internal temperature sensor
+	}
+	else if (0x0E == channel) // 14
+	{
+		// internal 1.1v band gap reference
+	}
+	else if (0x0F == channel) // 15
+	{
+		// ground
+	}
+	else
+	{
+		// invalid channel selection
+		return;
+	}
+
+	// set the MUX register
+	ADMUX = mux;
+}
 
