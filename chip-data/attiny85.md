@@ -175,11 +175,19 @@ void SelectADCChannel(uint8_t channel)
 
 //-----------------------------------------------------------------------------
 // ADC values
+// ADMUX
 #define ADC_VREF_VCC	0
 #define ADC_VREF_EXT	((0<<REFS2) | (0<<REFS1) | (1<<REFS0))
 #define ADC_VREF_INT11	((0<<REFS2) | (1<<REFS1) | (0<<REFS0))
 #define ADC_VREF_256	((1<<REFS2) | (1<<REFS1) | (0<<REFS0))
 #define ADC_VREF_256BP	((1<<REFS2) | (1<<REFS1) | (1<<REFS0))
+#define ADC_CHANNEL_0	((0<<MUX3) | (0<MUX2) | (0<<MUX1) | (0<<MUX0))
+#define ADC_CHANNEL_1	((0<<MUX3) | (0<MUX2) | (0<<MUX1) | (1<<MUX0))
+#define ADC_CHANNEL_2	((0<<MUX3) | (0<MUX2) | (1<<MUX1) | (0<<MUX0))
+#define ADC_CHANNEL_3	((0<<MUX3) | (0<MUX2) | (1<<MUX1) | (1<<MUX0))
+#define ADC_CHANNEL_BGP	((1<<MUX3) | (1<MUX2) | (0<<MUX1) | (0<<MUX0))
+#define ADC_CHANNEL_GND	((1<<MUX3) | (1<MUX2) | (0<<MUX1) | (1<<MUX0))
+#define ADC_CHANNEL_TMP	((1<<MUX3) | (1<MUX2) | (1<<MUX1) | (1<<MUX0))
 
 #define ADC_CLK_1		((0<<ADPS2) | (0<<ADPS1) | (0<<ADPS0))
 #define ADC_CLK_2		((0<<ADPS2) | (0<<ADPS1) | (1<<ADPS0))
@@ -192,7 +200,7 @@ void SelectADCChannel(uint8_t channel)
 
 // ADCSRA
 #define ADC_ENABLE		(1<<ADEN)
-#define ADC_NO_INTS		(0<<ADIE)
+#define ADC_NO_INTS		0
 #define ADC_INT_EN		(1<<ADIE)
 #define ADC_AUTOTRG		(1<<ADATE)
 
@@ -204,6 +212,8 @@ void SelectADCChannel(uint8_t channel)
 #define ADC_TRG_TC0F	((1<<ADTS2) | (0<<ADTS1) | (0<<ADTS0))
 #define ADC_TRG_TC0B	((1<<ADTS2) | (0<<ADTS1) | (1<<ADTS0))
 #define ADC_TRG_PCIR	((1<<ADTS2) | (1<<ADTS1) | (0<<ADTS0))
+#define ADC_LEFTADJ		((1<<ADLAR))
+#define ADC_RIGHTADJ	0
 
 
 //-----------------------------------------------------------------------------
