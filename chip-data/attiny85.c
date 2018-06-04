@@ -1,6 +1,7 @@
 //---------------------------------------------------------------------------------
-Universal Serial Interface (USI):
-
+// Universal Serial Interface (USI):
+function initUSI(void)
+{
 	USICR	=	(0<<USISIE) |
 				(0<<USIOIE) |
 				(0<<USIWM1) |
@@ -9,9 +10,13 @@ Universal Serial Interface (USI):
 				(0<<USICS0) |
 				(0<<USICLK) |
 				(0<<USITC);
+}
+
 
 //---------------------------------------------------------------------------------
-Timer0:
+// Timer0:
+function initTimer0(void)
+{
 	GTCCR	=	(0<<TSM)	|
 				(0<<PSR0);
 
@@ -32,11 +37,13 @@ Timer0:
 	TIMSK	=	(0<<OCIE0A)	|
 				(0<<OCIE0B)	|
 				(0<<TOIE0);
+}
 
 
 //---------------------------------------------------------------------------------
-Timer1:
-
+//Timer1:
+function initTimer1(void)
+{
 	TCCR1	=	(0<<CTC1)	|
 				(0<<PWM1A)	|
 				(0<<COM1A1)	|
@@ -61,12 +68,13 @@ Timer1:
 				(0<<PCKE)	|
 				(0<<PLLE)	|
 				(0<<PLOCK);
-
+}
 
 
 //---------------------------------------------------------------------------------
-Analog->Digital Converter:
-
+// Analog->Digital Converter:
+function initADC(void)
+{
 	ADMUX	=	(0<<REFS1)	|
 				(0<<REFS0)	|
 				(0<<ADLAR)	|
@@ -92,6 +100,7 @@ Analog->Digital Converter:
 				(0<<ADTS0);
 
 	DIDR0	=	(1<<PB1);
+}
 
 
 //---------------------------------------------------------------------------------
