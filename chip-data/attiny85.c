@@ -1,6 +1,5 @@
 //---------------------------------------------------------------------------------
-// Universal Serial Interface (USI):
-function initUSI(void)
+void initUSI(void)
 {
 	USICR	=	(0<<USISIE) |
 				(0<<USIOIE) |
@@ -14,8 +13,7 @@ function initUSI(void)
 
 
 //---------------------------------------------------------------------------------
-// Timer0:
-function initTimer0(void)
+void initTimer0(void)
 {
 	GTCCR	=	(0<<TSM)	|
 				(0<<PSR0);
@@ -41,8 +39,7 @@ function initTimer0(void)
 
 
 //---------------------------------------------------------------------------------
-//Timer1:
-function initTimer1(void)
+void initTimer1(void)
 {
 	TCCR1	=	(0<<CTC1)	|
 				(0<<PWM1A)	|
@@ -72,8 +69,7 @@ function initTimer1(void)
 
 
 //---------------------------------------------------------------------------------
-// Analog->Digital Converter:
-function initADC(void)
+void initADC(void)
 {
 	ADMUX	=	(0<<REFS1)	|
 				(0<<REFS0)	|
@@ -180,6 +176,38 @@ void SelectADCChannel(uint8_t channel)
 }
 
 
+//-----------------------------------------------------------------------------
+// Timer0 constants
+#define TIM0_CLKOFF			((0<<CS02) | (0<<CS01) | (0<<CS00))
+#define TIM0_CLKDIV1		((0<<CS02) | (0<<CS01) | (1<<CS00))
+#define TIM0_CLKDIV8		((0<<CS02) | (1<<CS01) | (0<<CS00))
+#define TIM0_CLKDIV64		((0<<CS02) | (1<<CS01) | (1<<CS00))
+#define TIM0_CLKDIV256		((1<<CS02) | (0<<CS01) | (0<<CS00))
+#define TIM0_CLKDIV1024		((1<<CS02) | (0<<CS01) | (1<<CS00))
+#define TIM0_CLKEXTT0FALL	((1<<CS02) | (1<<CS01) | (0<<CS00))
+#define TIM0_CLKEXTT0RISE	((1<<CS02) | (1<<CS01) | (1<<CS00))
+#define TIM0_CLKMASK		0xF8
+
+
+//-----------------------------------------------------------------------------
+// Timer1 constants
+#define TIM1_CLKOFF			((0<<CS13) | (0<<CS12) | (0<<CS11) | (0<<CS10))
+#define TIM1_CLKDIV1		((0<<CS13) | (0<<CS12) | (0<<CS11) | (1<<CS10))
+#define TIM1_CLKDIV2		((0<<CS13) | (0<<CS12) | (1<<CS11) | (0<<CS10))
+#define TIM1_CLKDIV4		((0<<CS13) | (0<<CS12) | (1<<CS11) | (1<<CS10))
+#define TIM1_CLKDIV8		((0<<CS13) | (1<<CS12) | (0<<CS11) | (0<<CS10))
+#define TIM1_CLKDIV16		((0<<CS13) | (1<<CS12) | (0<<CS11) | (1<<CS10))
+#define TIM1_CLKDIV32		((0<<CS13) | (1<<CS12) | (1<<CS11) | (0<<CS10))
+#define TIM1_CLKDIV64		((0<<CS13) | (1<<CS12) | (1<<CS11) | (1<<CS10))
+#define TIM1_CLKDIV128		((1<<CS13) | (0<<CS12) | (0<<CS11) | (0<<CS10))
+#define TIM1_CLKDIV256		((1<<CS13) | (0<<CS12) | (0<<CS11) | (1<<CS10))
+#define TIM1_CLKDIV512		((1<<CS13) | (0<<CS12) | (1<<CS11) | (0<<CS10))
+#define TIM1_CLKDIV1024		((1<<CS13) | (0<<CS12) | (1<<CS11) | (1<<CS10))
+#define TIM1_CLKDIV2048		((1<<CS13) | (1<<CS12) | (0<<CS11) | (0<<CS10))
+#define TIM1_CLKDIV4096		((1<<CS13) | (1<<CS12) | (0<<CS11) | (1<<CS10))
+#define TIM1_CLKDIV8192		((1<<CS13) | (1<<CS12) | (1<<CS11) | (0<<CS10))
+#define TIM1_CLKDIV16384	((1<<CS13) | (1<<CS12) | (1<<CS11) | (1<<CS00))
+#define TIM1_CLKMASK		0xF0
 
 
 //-----------------------------------------------------------------------------
