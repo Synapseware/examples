@@ -47,14 +47,14 @@
 # To rebuild project do "make clean" then "make all".
 #----------------------------------------------------------------------------
 
-PROGRAMMER = atmelice_pdi
-PORT = usb
+PROGRAMMER = 
+PORT = 
 
 # MCU name
-MCU = atxmega8e5
+MCU = 
 
 # Fuse values
-FUSEBYTE1 = 0x00
+FUSEBYTE1 = 
 FUSEBYTE2 = 
 FUSEBYTE4 = 
 FUSEBYTE5 = 
@@ -62,14 +62,14 @@ FUSEBYTE6 =
 
 
 # Processor frequency.
-F_CPU = 32000000
+F_CPU = 
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex
 
 
 # Target file name (without extension).
-TARGET = pwmtoesc
+TARGET = 
 
 
 # Object files directory
@@ -79,13 +79,13 @@ OBJDIR = .
 
 
 # Shared source code
-LIBS_DIR = ~/src/synapseware/libs/atpack/xmega-e-1.2.51/include/avr/
+LIBS_DIR = ~/src/synapseware/libs/atpack/{MCU-versioned-dir}/include/avr/
 
 # Atmel pack directory
-PACK_DIR = ~/src/synapseware/libs/atpack/xmega-e-1.2.51/gcc/dev/atxmega8e5/
+PACK_DIR = ~/src/synapseware/libs/atpack/{MCU-versioned-dir}/gcc/dev/{MCU-family}/
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC =	$(TARGET).c
+SRC = 
 
 
 # List C++ source files here. (C dependencies are automatically generated.)
@@ -128,6 +128,7 @@ EXTRAINCDIRS = $(LIBS_DIR)
 XMEGA_CHIPERASE = -e
 
 
+# Build the shared defs for the PACK_DIR
 SHARED_DEFS	= $(patsubst %,-B%,$(PACK_DIR))
 
 
