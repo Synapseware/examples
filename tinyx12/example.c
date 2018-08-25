@@ -1,14 +1,25 @@
 #include "example.h"
 
 
-void SetupTimerTCA0()
+void SetupLedTimer(void)
 {
 	// 
 }
 
 
+void setup(void)
+{
+	cli();
+
+	SetupLedTimer();
+
+	sei();
+}
+
 int main(void)
 {
+	setup();
+
 	while(1)
 	{
 		// main loop
