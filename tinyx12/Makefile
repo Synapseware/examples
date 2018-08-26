@@ -84,7 +84,7 @@ FUSEBYTEA = 0xC5
 
 
 # Processor frequency.
-F_CPU = 16000000
+F_CPU = 20000000
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex
