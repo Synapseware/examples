@@ -54,11 +54,11 @@ PORT = usb
 MCU = attiny412
 
 # Packs
-AVR8_DIR = $(HOME)/src/synapseware/avr-toolchain/avr8-gnu-toolchain-3.6.1.1752/bin
-PACK_FAM = tiny
+AVR8_DIR = /opt/avr8-gnu-toolchain-3.6.1.1752/bin
+PACK_ROT = /opt/avr/packs
+PACK_FAM = ATtiny
 PACK_VER = 1.3.172
-PACK_ROT = $(HOME)/src/synapseware/avr-toolchain/packs
-PACK_DIR = $(PACK_ROT)/$(PACK_FAM)-$(PACK_VER)
+PACK_DIR = $(PACK_ROT)/Atmel.$(PACK_FAM)_DFP.$(PACK_VER)
 PACK_GCC = $(PACK_DIR)/gcc/dev/$(MCU)
 PACK_INC = $(PACK_DIR)/include
 
