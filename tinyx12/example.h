@@ -16,7 +16,7 @@
 
 // LED pin info
 #define LED_PORT		PORTA
-#define LED_PIN			PIN7_bm
+#define LED_PIN			PIN3_bm
 
 
 #endif
