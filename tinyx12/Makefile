@@ -47,7 +47,7 @@
 # To rebuild project do "make clean" then "make all".
 #----------------------------------------------------------------------------
 
-PROGRAMMER = atmelice_pdi
+PROGRAMMER = atmelice_updi
 PORT = usb 
 
 # MCU name
