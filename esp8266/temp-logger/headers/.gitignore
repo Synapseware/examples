@@ -1,0 +1,4 @@
+# Ignore special header files that contain credentials
+credentials.h
+adafruitio.h
+
